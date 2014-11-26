@@ -1,2 +1,0 @@
-InformaticaSaraLei.github.io
-============================

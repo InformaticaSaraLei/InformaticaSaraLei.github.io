@@ -1,67 +1,235 @@
-<!doctype html>
-<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
-<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen">
-  <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script type="text/javascript" src="javascripts/script.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-  <title>Informaticasaralei.GitHub.io</title>
-  <meta name="description" content="">
+    <title>Informatica sarà lei!</title>
 
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Custom CSS -->
+    <link href="css/modern-business.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Navigation -->
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script>
+        $(function () {
+            $("#navigation_bar").load("navigation_bar.html");
+            $("#footer").load("footer.html");
+        });
+    </script>
 </head>
-
 <body>
+<div id="navigation_bar"></div>
+<!--- Inserimento navbar ---->
 
-  <div class="wrapper">
-    <header>
-      <h1 class="title">Informaticasaralei.GitHub.io</h1>
-    </header>
-    <div id="container">
-      <p class="tagline"></p>
-      <div id="main" role="main">
-        <div class="download-bar">
-        <div class="inner">
+
+<!-- Header Carousel -->
+<header id="myCarousel" class="carousel slide">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+        <li data-target="#myCarousel" data-slide-to="3"></li>
+    </ol>
+
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner">
+        <div class="item active">
+            <div class="fill" style="background-image:url('img/Slide1.png');"></div>
+            <div class="carousel-caption">
+                <h2></h2>
+            </div>
+        </div>
+        <div class="item">
+            <div class="fill" style="background-image:url('img/Slide2.png');"></div>
+            <div class="carousel-caption">
+                <h2>Nome argomento</h2>
+            </div>
+        </div>
+        <div class="item">
+            <!-- <div class="fill" style="background-image:url('http://placehold.it/1900x1080&text=Progetti');"></div>-->
+            <div class="fill" style="background-image:url('img/Slide3.png');"></div> 
+            <div class="carousel-caption">
+                <h2>Nome argomento</h2>
+            </div>
+        </div>
+         <div class="item">
+            <div class="fill" style="background-image:url('img/Slide4.png');"></div>
+            <div class="carousel-caption">
+                <h2>Nome argomento</h2>
+            </div>
+        </div>  
         
-        </div>
-        <span class="blc"></span><span class="trc"></span>
-        </div>
-        <article class="markdown-body">
-          <h3>
-<a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
-        <h4>View project <a href="http://InformaticaSaraLei.github.io/ProgettoSito/">Informatica Sara Lei</a></h4>
-        </article>
-      </div>
-      
     </div>
-    
-    <footer>
-      <div class="owner">
 
-      <p><a href="https://github.com/InformaticaSaraLei" class="avatar"><img src="https://avatars0.githubusercontent.com/u/9350766?v=3&amp;s=60" width="48" height="48"></a>
-       
-       View <a href="http://github.com/InformaticaSaraLei/ProgettoSito">InformaticaSaraLei</a> on GitHub
-       </p>
+    <!-- Controls -->
+    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+        <span class="icon-prev"></span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel" data-slide="next">
+        <span class="icon-next"></span>
+    </a>
+</header>
 
-      </div>
-      <div class="creds">
-        <small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
-      </div>
-    </footer>
-  </div>
-  <div class="current-section">
-    <a href="#top">Scroll to top</a>
-    <a href="https://github.com/InformaticaSaraLei/InformaticaSaraLei.github.io/tarball/master" class="tar">tar</a><a href="https://github.com/InformaticaSaraLei/InformaticaSaraLei.github.io/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
-    <p class="name"></p>
-  </div>
+<!-- Page Content -->
+<div class="container">
 
-  
+    <!-- Marketing Icons Section -->
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">
+                Benvenute nel sito Informatica sarà lei!
+            </h1>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4><i class="fa fa-fw fa-users"></i> Forum</h4>
+                </div>
+                <div class="panel-body">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque, optio corporis quae nulla
+                        aspernatur in alias at numquam rerum ea excepturi expedita tenetur assumenda voluptatibus
+                        eveniet incidunt dicta nostrum quod?</p>
+                    <a href="404.html" class="btn btn-default">Accedi al Forum!</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4><i class="fa fa-fw fa-graduation-cap"></i> Servizi &amp; News</h4>
+                </div>
+                <div class="panel-body">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque, optio corporis quae nulla
+                        aspernatur in alias at numquam rerum ea excepturi expedita tenetur assumenda voluptatibus
+                        eveniet incidunt dicta nostrum quod?</p>
+                    <a href="/servizi/" class="btn btn-default">Leggi le News!</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4><i class="fa fa-fw fa-folder-open"></i> Progetti</h4>
+                </div>
+                <div class="panel-body">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque, optio corporis quae nulla
+                        aspernatur in alias at numquam rerum ea excepturi expedita tenetur assumenda voluptatibus
+                        eveniet incidunt dicta nostrum quod?</p>
+                    <a href="/progetti/" class="btn btn-default">Scopri i Progetti!</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.row -->
+
+    <!-- Features Section1 -->
+    <div class="row">
+        <div class="col-lg-12">
+            <h2 class="page-header">Gioco</h2>
+        </div>
+        <div class="col-md-6">
+            <p>Realizzazione di un gioco che serve a mostrare che con co
+                mandi semplici è possibile sviluppare programmi e operazioni più complessi. Include:</p>
+            <ul>
+                <li>Lorem ipsum dolor sit amet</li>
+                <li>Consectetur adipisicing elit</li>
+                <li>Corporis, omnis doloremque</li>
+                <li>Non cum id reprehenderit</li>
+                <li>Quisquam totam aspernatur</li>
+            </ul>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, omnis doloremque non cum id
+                reprehenderit, quisquam totam aspernatur tempora minima unde aliquid ea culpa sunt. Reiciendis quia
+                dolorum ducimus unde.</p>
+            <br>
+
+            <div class="col-md-4">
+                <a class="btn btn-lg btn-default btn-block" href="#">Accedi al gioco!</a>
+            </div>
+            <br>
+        </div>
+        <div class="col-md-6">
+            <img class="img-responsive" src="http://placehold.it/700x450&text=Gioco" alt="">
+        </div>
+    </div>
+    <!-- /.row -->
+
+    <hr>
+
+    <!-- Features Section2 -->
+    <div class="row">
+        <div class="col-lg-12">
+            <h2 class="page-header">Applicazione</h2>
+        </div>
+        <div class="col-md-6">
+            <p>Variante delle applicazioni informatiche dedicate ai dispositivi di
+                tipo mobile. Include:</p>
+            <ul>
+                <li>Lorem ipsum dolor sit amet</li>
+                <li>Consectetur adipisicing elit</li>
+                <li>Corporis, omnis doloremque</li>
+                <li>Non cum id reprehenderit</li>
+                <li>Quisquam totam aspernatur</li>
+            </ul>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, omnis doloremque non cum id
+                reprehenderit, quisquam totam aspernatur tempora minima unde aliquid ea culpa sunt. Reiciendis quia
+                dolorum ducimus unde.</p>
+            <br>
+
+            <div class="col-md-4">
+                <a class="btn btn-lg btn-default btn-block" href="#">Scarica l'App!</a>
+            </div>
+            <br>
+        </div>
+        <div class="col-md-6">
+            <img class="img-responsive" src="http://placehold.it/700x450&text=App" alt="">
+        </div>
+    </div>
+    <!-- /.row -->
+
+    <hr>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+    <!--- Inserimento navbar ---->
+
+    <!-- End Footer -->
+
+</div>
+<!-- /.container -->
+
+<!-- jQuery -->
+<script src="js/jquery.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="js/bootstrap.min.js"></script>
+
+<!-- Script to Activate the Carousel -->
+<script>
+    $('.carousel').carousel({
+        interval: 5000 //changes the speed
+    })
+</script>
+
 </body>
+
 </html>
