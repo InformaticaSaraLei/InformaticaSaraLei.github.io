@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 
 <head>
 
@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Informazioni evento x - Informatica sarà lei!</title>
+    <title>Dettagli evento</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="../css/bootstrap.min.css" rel="stylesheet">
@@ -46,58 +46,71 @@
     <!-- Page Heading/Breadcrumbs -->
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Evento
-                <small>Sottotitolo</small>
+            <h1 class="page-header">Eventi
+                <small>Titolo dell'evento</small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="../index.html">Home</a>
                 </li>
-                <li><a href="index.html">Eventi</a></li>
-                <li class="active">Informazioni evento</li>
+                <li><a href="listaEventi.html">Eventi</a></li>
+                <li class="active">Titolo dell'evento</li>
             </ol>
         </div>
     </div>
+    
     <!-- /.row -->
-
     <!-- Content Row -->
-    <a href="index.html">Torna agli eventi</a>
-    <a href="calendario.html">Calendario</a>
-
+    
+    <div class="row text-right">
+            <a href="calendario.html">Calendario</a>
+    </div>
+    
+    
+<!-- /.row -->
+    </br>
+    <?php
+      require 'lib/evento.php';
+      $em = new EventiManager();
+      $id = $_POST['id'];
+      $e = $em->getEventoById($id);
+    ?>
     <div class="row">
-        <div class="col-lg-12">
-            Titolo
+        <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4><i class="fa fa-fw fa-file-text-o"></i>Descrizione</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="pull-left col-md-6 col-sm-7">
+                            <h4>Descrizione dell'evento</h4>
+                            <p><?php echo $e->descrizione ?></p>
+                        </div>
+                        <div class="col-md-1"></div>
+                        <div class="pull-left col-md-5 col-sm-5 col-xs-12">
+                        <img src="<?php echo $e->link_img ?>" class="img-responsive customer-img" alt="Immagine Evento">
+                        </div>
+                    </div>
+                </div>
+                </br>
+                <div class="panel-heading">
+                    <h4><i class="fa fa-fw fa-clock-o"></i>Luogo e date</h4>
+                </div>
+                <div class="panel-body">
+                Luogo: <?php $e->provincia + ' ' + $e->comune + ' ' + $e->indirizzo ?>
+                    </br>
+                    Data inizio evento: <?php $e->inizio?> alle ore: <?php $e->ora_inizio ?>
+                    </br>
+                    Data fine evento: <?php $e->fine?> alle ore: <?php $e->orario_fine ?>
+                </div>
+                    
         </div>
     </div>
-    <!-- /.row -->
 
-    <!-- Content Row -->
-    <div class="row">
-        <div class="col-lg-12">
-            Descrizione
-        </div>
-    </div>
-    <!-- /.row -->
+<hr>
 
-    <!-- Content Row -->
-    <div class="row">
-        <div class="col-lg-12">
-            <img src="evento.png"></img>
-        </div>
-    </div>
-    <!-- /.row -->
 
-    <!-- Content Row -->
-    <div class="row">
-        <div class="col-lg-12">
-            <a href="calendario.html">Visualizza evento nel calendario</a>
-        </div>
-        <div class="col-lg-12">
-            <p>Contenuto</p>
-        </div>
-    </div>
-    <!-- /.row -->
 
-    <hr>
+<!-- End Footer -->
 
 </div>
 <!-- /.container -->
@@ -105,8 +118,6 @@
 <!-- Footer -->
 <div id="footer"></div>
 <!--- Inserimento navbar ---->
-
-<!-- End Footer -->
 
 <!-- jQuery -->
 <script src="../js/jquery.js"></script>
