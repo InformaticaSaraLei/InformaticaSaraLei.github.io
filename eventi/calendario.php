@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 
 <head>
 
@@ -9,7 +9,9 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Eventi - Informatica sarà lei!</title>
+    <title>Eventi - Informatica sarï¿½ lei!</title>
+    <!-- jQuery -->
+    <script src="../js/jquery.js"></script>
 
     <!-- Bootstrap Core CSS -->
     <link href="../css/bootstrap.min.css" rel="stylesheet">
@@ -35,6 +37,35 @@
             $("#footer").load("../footer.html");
         });
     </script>
+    <link rel='stylesheet' href='fullcalendar/fullcalendar.css'/>
+    <script src="fullcalendar/lib/jquery.min.js"></script>
+    <script src="fullcalendar/lib/moment.min.js"></script>
+    <script src="fullcalendar/fullcalendar.js"></script>
+    <script src="fullcalendar/lang/it.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                lang: 'it',
+                defaultDate: new Date(),
+                editable: true,
+                eventLimit: true, // allow "more" link when too many events
+                events: {
+                    url: 'fullcalendar/php/get-events.php',
+                    error: function () {
+                        $('#script-warning').show();
+                    }
+                },
+               
+            });
+
+        });
+    </script>
 </head>
 <body>
 <div id="navigation_bar"></div>
@@ -42,59 +73,36 @@
 
 <!-- Page Content -->
 <div class="container">
-
+    <br>
     <!-- Page Heading/Breadcrumbs -->
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Eventi
-                <small>Tutti gli eventi</small>
+            <h1 class="page-header">Calendario
+                <small>Eventi</small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="../index.html">Home</a>
                 </li>
-                <li class="active">Eventi</li>
+                <li><a href="index.php">Eventi</a></li>
+                <li class="active">Calendario eventi</li>
             </ol>
         </div>
     </div>
     <!-- /.row -->
 
     <!-- Content Row -->
-    <?php
-    require 'lib/evento.php';
-    $em = new EventiManager();
-    $eventi = $em->getEventi();
-    foreach ($eventi as $e) {
-        echo '<div class="col-md-6">';
-        echo '<div class="panel panel-default">';
-        echo '<div class="panel-heading">';
-        echo '<h4><i class="fa fa-fw fa-users">' + ($e->titolo) + '</h4>';
-        echo '</div>';
-        echo '<div class="panel-body">';
-        echo '<div class="row">';
-        echo '<div class="pull-left col-md-7 col-sm-8 col-xs-12">';
-        echo '<p>' + ($e->descrizione) + '</p>';
-        echo '</div>';
-        echo '<div class="pull-left col-md-5 col-sm-4 col-xs-12">';
-        echo '<img src="' + $e->link_img + '" class="img-responsive customer-img" alt="Immagine Evento">';
-        echo '</div>';
-        echo '</div>';
-        echo '<div class="row">';
-        echo '<div class="col-md-4"></div>';
-        echo '<div class="col-md-4">';
-        echo '<a href="#" class="btn btn-default text-center">Altre informazioni</a>';
-        echo '</div>';
-        echo '<div class="col-md-4"></div>';
-        echo '</div>';
-        echo '</div>';
-        echo '</div>';
-        echo '</div>';
-    }
-    ?>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+        <div id='calendar'></div>
+        </div>
+
+
+    </div>
     <!-- /.row -->
+
     <hr>
 
 </div>
-
 <!-- /.container -->
 
 <!-- Footer -->
@@ -103,8 +111,6 @@
 
 <!-- End Footer -->
 
-<!-- jQuery -->
-<script src="../js/jquery.js"></script>
 
 <!-- Bootstrap Core JavaScript -->
 <script src="../js/bootstrap.min.js"></script>
