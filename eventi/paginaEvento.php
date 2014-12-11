@@ -74,18 +74,32 @@
     <!-- /.row -->
     <!-- Content Row -->
 
-    <div class="row text-right">
-        <a href="calendario.php">Calendario</a>
-    </div>
+    <div class="row">    
 	<?php
-		$loggato=true; //Impostare se loggato o no in qualche modo
-		$isAdmin=true;//Impostare se l'utente Ã¨ admin
+        include_once "../login/lib/userscontroller.php";
+        include_once "../login/lib/database.php";
+        include_once "../login/lib/functions.php";
+        
+        $isAdmin = false;
+        $loggato = true;
+        
+        $user = new UsersController();
+        if(!isset($_SESSION['login']))
+            $loggato = false;
+            
+        if($loggato && $user->isAdmin($_SESSION['login']))
+            $isAdmin = true;
+            
 		if($loggato && $isAdmin){
-			echo '<div class="row">
-						<div class="pull-left col-md-1 col-sm-12 col-xs-12"><a href="esito.php?op=canc&id='.$e->id.'" onclick="return confirm(\'Sei sicuro di voler cancellare questo evento?\');">Elimina evento</a></div>
-				  </div>';
+			echo    '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-left">
+                         <a href="esito.php?op=canc&id='.$e->id.'" onclick="return confirm(\'Sei sicuro di voler cancellare questo evento?\');">Elimina evento</a>
+                     </div>';
 		}
 	?>
+        <div class="pull-right col-lg-6 col-md-6 col-sm-6 col-xs-12 text-right">
+            <h4><a href="calendario.php">Calendario</a></h4>
+        </div>
+    </div>
 
     <!-- /.row -->
     <br>
@@ -98,13 +112,7 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="pull-left col-md-6 col-sm-7">
-                        <h4>Descrizione dell'evento</h4>
-
                         <p><?php echo $e->descrizione ?></p>
-                    </div>
-                    <div class="col-md-1"></div>
-                    <div class="pull-left col-md-5 col-sm-5 col-xs-12">
-                        <img src="<?php echo $e->link_img ?>" class="img-responsive customer-img" alt="Immagine Evento">
                     </div>
                 </div>
             </div>
@@ -123,7 +131,14 @@
                 <h4><i class="fa fa-fw fa-question-circle"></i>Contenuto</h4>
             </div>
             <div class="panel-body">
-                <?php echo $e->contenuto; ?>
+                <div class="row">
+                    <div class="pull-left col-md-6 col-sm-7">
+                        <p><?php echo $e->contenuto ?></p>
+                    </div>
+                    <div class="pull-right col-md-5 col-sm-5 col-xs-12">
+                        <img src="<?php echo $e->link_img ?>" class="img-responsive customer-img" alt="Immagine Evento">
+                    </div>
+                </div>
             </div>
         </div>
     </div>

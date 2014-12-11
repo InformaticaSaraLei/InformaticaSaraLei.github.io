@@ -32,7 +32,7 @@
 		return $options;
 	}	
 	
-
+	$pagination_prefix="";
 	
 	if($_SESSION["odl_class"]=="") $_SESSION["odl_class"]="local";
 	
@@ -47,17 +47,15 @@
 
 		if($_SESSION["llimit"]=="") $_SESSION["llimit"]=10; 
 		if($_SESSION["lstart"]=="") $_SESSION["lstart"]=0; 
-		if($_SESSION["lq"]==""){ $_SESSION["q"]="Informatica"; $lq_placeholder="Professione, parole chiave o società"; } else {}
-		if($_SESSION["ll"]==""){ $_SESSION["l"]="Venezia"; $ll_placeholder="città, regione o codice postale";} else {}
-		if($_POST["llimit"]!="") $_SESSION["llimit"]=$_SESSION["llimit"]+0;
+		if($_SESSION["q"]==""){ $_SESSION["q"]="Informatica"; $lq_placeholder="Professione, parole chiave o società"; } else {}
+		if($_SESSION["l"]==""){ $_SESSION["l"]="Venezia"; $ll_placeholder="città, regione o codice postale";} else {}
+		if($_POST["llimit"]) $_SESSION["llimit"]=$_SESSION["llimit"]+0;
 		if($_GET["lstart"]!="") $_SESSION["lstart"]=$_GET["lstart"]+0;
-		if($_POST["lq"]!="") $_SESSION["lq"]=$_POST["lq"];
-		if($_POST["ll"]!="") $_SESSION["ll"]=$_POST["ll"];
+		if($_POST["q"]!="") $_SESSION["q"]=$_POST["q"];
+		if($_POST["l"]!="") $_SESSION["l"]=$_POST["l"];
 		
 		$db=new Database();
-		$offerte= $db->getOfferteLavoro($_SESSION["lstart"],$_SESSION["llimit"]);
-		$nazioni=$db->getNazioni();
-		$stati=$db->getStatiOpportunita();
+
 		
 		switch($_POST["action"]){
 			case "insert"  : // ---- insertOpportunita
@@ -65,13 +63,15 @@
 							 $_GET["action"]="";
 							 $content.="<b>insert<br>";
 							 $db->insertOpportunita($_POST);
-							 print_r($_POST);
+							 $offerte= $db->getOfferteLavoro($_SESSION["lstart"],$_SESSION["llimit"],$_SESSION["q"]);
+							 $totalResults= $db->total_results;
+							 // print_r($_POST);
 							 break;
 			case "update"  : // ---- updateOpportunita
 			                 $_SESSION["action"]="";
 							 $_GET["action"]="";
 							 $content.="<b>update<br>";
-							  print_r($_POST);
+							 // print_r($_POST);
 							 break;
 		    case "delete"  : // ---- deleteOpportunita
 			                 $_SESSION["action"]="";
@@ -79,9 +79,10 @@
 							 $content.="<b>delete<br>";
 							 break;
 		}
-		print $_GET["action"];
+		// print $_GET["action"];
 		switch($_GET["action"]){
 			case "update"  : $_SESSION["action"]="update";
+							 $offerta=$db->getOffertaLavoro($_GET["jobkey"]);
 							 $action_to_do=true;
 							 break;
 			case "insert"  : $_SESSION["action"]="insert";
@@ -92,30 +93,85 @@
 							 $action_to_do=false;
 							 break;
 			default        : $action_to_do=false;
-			                 $_SESSION["action"]="";
+			                 $_SESSION["action"]="list";
+							 
 							 break;
 		}
-			print "atd:".$action_to_do;
-			if($_SESSION["action"]!="insert"){
-				$content.="<br><a class=\"btn btn-success pull-right\" type=\"button\" href=\"index.php?action=insert\">+ INSERISCI OPPORTUNITA'</a>";
-			}	
+
+		$offerte= $db->getOfferteLavoro($_SESSION["lstart"],$_SESSION["llimit"],$_SESSION["q"]);
+		$totalResults= $db->total_results;
+		$nazioni=$db->getNazioni();
+		$stati=$db->getStatiOpportunita();		
+
+		
+		// print "atd:".$action_to_do;
+		if($_SESSION["action"]!="insert"){
+			$content.="<br><a class=\"btn btn-success pull-right\" type=\"button\" href=\"index.php?action=insert\">+ INSERISCI OPPORTUNITA'</a>";
+		}	
+		
+		switch($_GET["mode"]){
+			case "detail" : $content.="detail"; 
+							break;
+			default 	  :	break;			
+							
+		}
+		
+		if($_SESSION["action"]=="list"){
+			$jobOpportunity=""; // print_r($offerte);
+			/* ----- PAGINATION ----- */
 			
-		if($action_to_do){
+			$paginationPages=ceil($totalResults/$_SESSION["llimit"]);
+			$currentPage=$_SESSION["lstart"]/$_SESSION["llimit"];
+			// print $totalResults."<br>";
+			$pagination_prefix="l";
+			// print $paginationPages;
+			for($page=1;$page<=$paginationPages;$page++){
+			// print $page;
+				if($currentPage==($page-1))
+					$pagination.="<li class=\"active\"><a href=\"index.php?lstart=".(($page-1)*$_SESSION["llimit"])."#navigation_bar\">".$page."</a></li>";
+				else	
+					$pagination.="<li><a href=\"index.php?lstart=".(($page-1)*$_SESSION["llimit"])."#navigation_bar\">".$page."</a></li>";
+			}
+			$paginationBlock="
+			
+			";
+			/* ----- /PAGINATION ----- */						
+		
+			foreach($offerte as $jobOpportunity){
+				// print_r($offerte);
+				$content.="
+				<br><br>
+				<div class=\"panel panel-default\">
+					<div class=\"panel-heading\">
+						<h3 class=\"panel-title\"><b>".$jobOpportunity["TITOLO_LAVORO"]." <small style=\"color: #ffffff;\">(".$jobOpportunity["DATA_INSERIMENTO"].")</small></b></h3>
+					</div>
+					<div class=\"panel-body\">
+						<h4>".strtoupper($jobOpportunity["AZIENDA_CITTA"])."(". $jobOpportunity["AZIENDA_PROVINCIA"].") - ".$jobOpportunity["FK_NAZIONE"]."</h4><br>
+						".$jobOpportunity["SNIPPET_ANNUNCIO"]."
+						<br>
+						 <a href=\"index.php?action=update&jobkey=".$jobOpportunity["ID"]."\" class=\"btn btn-warning  \" role=\"button\">Modifica Annuncio</a><a href=\"index.php?mode=detail&jobkey=".$jobOpportunity["ID"]."\" class=\"btn btn-info  pull-right\" role=\"button\">Vedi Dettaglio Annuncio</a>
+					</div>
+				</div>
+				";		
+			}
+		}
+		
+			
+        if($action_to_do){
 			$map_action_string=array("insert"=>"INSERIMENTO","update"=>"MODIFICA");
-			
-		    $content.="<br>
+		    $content.="<br><br>
 					<div class=\"panel panel-default\">
 						<div class=\"panel-heading\">
 							<h3 class=\"panel-title\">".$map_action_string[$_SESSION["action"]]." OPPORTUNITA'</h3>
 						</div>
 						<div class=\"panel-body\">
-								<form class=\"form-horizontal\" role=\"form\" method=\"POST\" target=\"index.php\">
+								<form class=\"form-horizontal\" role=\"form\" method=\"POST\" action=\"index.php\">
 								  <div class=\"form-group\" draggable=\"true\">
 									<div class=\"col-sm-2\">
 									  <label for=\"TITOLO_LAVORO\" class=\"control-label\">TITOLO</label>
 									</div>
 									<div class=\"col-sm-10\">
-									  <input name=\"TITOLO_LAVORO\" type=\"text\" class=\"form-control\" id=\"TITOLO_LAVORO\" placeholder=\"Titolo opportunità\">
+									  <input name=\"TITOLO_LAVORO\" type=\"text\" class=\"form-control\" id=\"TITOLO_LAVORO\" placeholder=\"Titolo opportunità\" value=\"".$offerta["TITOLO_LAVORO"]."\">
 									</div>
 								  </div>
 								  <div class=\"form-group\" draggable=\"true\">
@@ -123,7 +179,7 @@
 									  <label for=\"TIPO_CONTRATTO\" class=\"control-label\">CONTRATTO</label>
 									</div>
 									<div class=\"col-sm-10\">
-									  <input name=\"TIPO_CONTRATTO\" type=\"text\" class=\"form-control\" id=\"TIPO_CONTRATTO\" placeholder=\"Tipo contratto\">
+									  <input name=\"TIPO_CONTRATTO\" type=\"text\" class=\"form-control\" id=\"TIPO_CONTRATTO\" placeholder=\"Tipo contratto\" value=\"".$offerta["TIPO_CONTRATTO"]."\">
 									</div>
 								  </div>
 								  
@@ -132,7 +188,7 @@
 									  <label for=\"AZIENDA_NOME\" class=\"control-label\">AZIENDA</label>
 									</div>
 									<div class=\"col-sm-10\">
-									  <input name=\"AZIENDA_NOME\" type=\"text\" class=\"form-control\" id=\"AZIENDA_NOME\" placeholder=\"Azienda proponente\">
+									  <input name=\"AZIENDA_NOME\" type=\"text\" class=\"form-control\" id=\"AZIENDA_NOME\" placeholder=\"Azienda proponente\" value=\"".$offerta["AZIENDA_NOME"]."\">
 									</div>
 								  </div>								  
 								  
@@ -142,7 +198,7 @@
 									  <label for=\"FK_NAZIONE\" class=\"control-label\">NAZIONE</label>
 									</div>
 									<div class=\"col-sm-10\">
-									  <select name=\"FK_NAZIONE\" class=\"form-control\" id=\"FK_NAZIONE\" placeholder=\"Nazione\">".buildNationOptions($nazioni,"")."</select>
+									  <select name=\"FK_NAZIONE\" class=\"form-control\" id=\"FK_NAZIONE\" placeholder=\"Nazione\">".buildNationOptions($nazioni,$offerta["FK_NAZIONE"])."</select>
 									</div>
 								  </div>									  
 								  
@@ -151,7 +207,7 @@
 									  <label for=\"AZIENDA_PROVINCIA\" class=\"control-label\">PROVINCIA</label>
 									</div>
 									<div class=\"col-sm-10\">
-									  <input name=\"AZIENDA_PROVINCIA\" type=\"text\" class=\"form-control\" id=\"AZIENDA_PROVINCIA\" placeholder=\"Provincia\">
+									  <input name=\"AZIENDA_PROVINCIA\" type=\"text\" class=\"form-control\" id=\"AZIENDA_PROVINCIA\" placeholder=\"Provincia\" value=\"".$offerta["AZIENDA_PROVINCIA"]."\">
 									</div>
 								  </div>									  
 						
@@ -160,7 +216,7 @@
 									  <label for=\"AZIENDA_CITTA\" class=\"control-label\">CITTA</label>
 									</div>
 									<div class=\"col-sm-10\">
-									  <input name=\"AZIENDA_CITTA\" type=\"text\" class=\"form-control\" id=\"AZIENDA_CITTA\" placeholder=\"Città\">
+									  <input name=\"AZIENDA_CITTA\" type=\"text\" class=\"form-control\" id=\"AZIENDA_CITTA\" placeholder=\"Città\" value=\"".$offerta["AZIENDA_CITTA"]."\">
 									</div>
 								  </div>	
 						
@@ -169,7 +225,7 @@
 									  <label for=\"AZIENDA_LATITUDINE\" class=\"control-label\">LATITUDINE</label>
 									</div>
 									<div class=\"col-sm-10\">
-									  <input name=\"AZIENDA_LATITUDINE\" type=\"text\" class=\"form-control\" id=\"AZIENDA_LATITUDINE\" placeholder=\"Latitudine\">
+									  <input name=\"AZIENDA_LATITUDINE\" type=\"text\" class=\"form-control\" id=\"AZIENDA_LATITUDINE\" placeholder=\"Latitudine\" value=\"".$offerta["AZIENDA_LATITUDINE"]."\">
 									</div>
 								  </div>						
 						
@@ -178,7 +234,7 @@
 									  <label for=\"AZIENDA_LONGITUDINE\" class=\"control-label\">LONGITUDINE</label>
 									</div>
 									<div class=\"col-sm-10\">
-									  <input name=\"AZIENDA_LONGITUDINE\" type=\"text\" class=\"form-control\" id=\"AZIENDA_LONGITUDINE\" placeholder=\"Longitudine\">
+									  <input name=\"AZIENDA_LONGITUDINE\" type=\"text\" class=\"form-control\" id=\"AZIENDA_LONGITUDINE\" placeholder=\"Longitudine\" value=\"".$offerta["AZIENDA_LONGITUDINE"]."\">
 									</div>
 								  </div>												
 						
@@ -187,7 +243,7 @@
 									  <label for=\"CONTATTO_TEL\" class=\"control-label\">TELEFONO</label>
 									</div>
 									<div class=\"col-sm-10\">
-									  <input name=\"CONTATTO_TEL\" type=\"text\" class=\"form-control\" id=\"CONTATTO_TEL\" placeholder=\"Contatto telefonico\">
+									  <input name=\"CONTATTO_TEL\" type=\"tel\" class=\"form-control\" id=\"CONTATTO_TEL\" placeholder=\"Contatto telefonico\" value=\"".$offerta["CONTATTO_TEL"]."\">
 									</div>
 								  </div>
 
@@ -196,7 +252,7 @@
 									  <label for=\"CONTATTO_FAX\" class=\"control-label\">CONTATTO FAX</label>
 									</div>
 									<div class=\"col-sm-10\">
-									  <input name=\"CONTATTO_FAX\" type=\"text\" class=\"form-control\" id=\"CONTATTO_FAX\" placeholder=\"Contatto fax\">
+									  <input name=\"CONTATTO_FAX\" type=\"text\" class=\"form-control\" id=\"CONTATTO_FAX\" placeholder=\"Contatto fax\" value=\"".$offerta["CONTATTO_FAX"]."\">
 									</div>
 								  </div>								  
 						
@@ -205,7 +261,7 @@
 									  <label for=\"CONTATTO_EMAIL\" class=\"control-label\">EMAIL</label>
 									</div>
 									<div class=\"col-sm-10\">
-									  <input name=\"CONTATTO_EMAIL\" type=\"email\" class=\"form-control\" id=\"CONTATTO_EMAIL\" placeholder=\"Email di contatto\">
+									  <input name=\"CONTATTO_EMAIL\" type=\"email\" class=\"form-control\" id=\"CONTATTO_EMAIL\" placeholder=\"Email di contatto\" value=\"".$offerta["CONTATTO_EMAIL"]."\">
 									</div>
 								  </div>
 								  
@@ -215,7 +271,7 @@
 									  <label for=\"FONTE_DESCR\" class=\"control-label\">FONTE</label>
 									</div>
 									<div class=\"col-sm-10\">
-									  <input name=\"FONTE_DESCR\" type=\"text\" class=\"form-control\" id=\"FONTE_DESCR\" placeholder=\"Fonte\">
+									  <input name=\"FONTE_DESCR\" type=\"text\" class=\"form-control\" id=\"FONTE_DESCR\" placeholder=\"Fonte\" value=\"".$offerta["FONTE_DESCR"]."\">
 									</div>
 								  </div>
 								  
@@ -224,7 +280,7 @@
 									  <label for=\"FONTE_LINK\" class=\"control-label\">LINK ALLA FONTE</label>
 									</div>
 									<div class=\"col-sm-10\">
-									  <input name=\"FONTE_LINK\" type=\"text\" class=\"form-control\" id=\"FONTE_LINK\" placeholder=\"Link alla fonte\">
+									  <input name=\"FONTE_LINK\" type=\"url\" class=\"form-control\" id=\"FONTE_LINK\" placeholder=\"Link alla fonte\" value=\"".$offerta["FONTE_LINK"]."\">
 									</div>
 								  </div>							  
 								  
@@ -233,7 +289,7 @@
 									  <label for=\"SNIPPET_ANNUNCIO\" class=\"control-label\">ESTRATTO ANNUNCIO</label>
 									</div>
 									<div class=\"col-sm-10\">
-									  <input name=\"SNIPPET_ANNUNCIO\" type=\"text\" class=\"form-control\" id=\"SNIPPET_ANNUNCIO\" placeholder=\"Estratto dell'annuncio\">
+									  <input name=\"SNIPPET_ANNUNCIO\" type=\"text\" class=\"form-control\" id=\"SNIPPET_ANNUNCIO\" placeholder=\"Estratto dell'annuncio\" value=\"".$offerta["SNIPPET_ANNUNCIO"]."\">
 									</div>
 								  </div>							  
 								  
@@ -242,7 +298,7 @@
 									  <label for=\"FK_STATO_OFFERTA\" class=\"control-label\">STATO OFFERTA</label>
 									</div>
 									<div class=\"col-sm-10\">
-									  <select name=\"FK_STATO_OFFERTA\" id=\"FK_STATO_OFFERTA\" class=\"form-control\" id=\"FK_STATO_OFFERTA\" placeholder=\"Stato offerta\">".buildStatiOptions($stati,"")."</select>
+									  <select name=\"FK_STATO_OFFERTA\" id=\"FK_STATO_OFFERTA\" class=\"form-control\" id=\"FK_STATO_OFFERTA\" placeholder=\"Stato offerta\">".buildStatiOptions($stati,$offerta["FK_STATO_OFFERTA"])."</select>
 									</div>
 								  </div>								  
 								  
@@ -254,7 +310,8 @@
 								  </div>
 								  
 								  
-								  <input type=\"hidden\" name=\"action\" value=\"".$_SESSION["action"]."\">
+								  <input type=\"hidden\" id=\"action\" name=\"action\" value=\"".$_SESSION["action"]."\">
+								  <input type=\"hidden\" id=\"ID\" name=\"ID\" value=\"".$_GET["jobkey"]."\">
 								</form>
 							</div>
 						</div>	
@@ -490,11 +547,11 @@
         <div  id="pagination"  class="col-lg-12 text-center">		
 			<?php if($pagination!="") : ?>
 			<ul class="pagination pagination-sm">
-			  <li><a href="index.php?start=0#navigation_bar"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
-			  <li><a href="<?php if($currentPage>1) echo "index.php?start=".($currentPage-1)*$_SESSION["limit"]; ?>"><span class="glyphicon glyphicon-step-backward"></span></a></li>
+			  <li><a href="index.php?<?php echo $pagination_prefix;?>start=0#navigation_bar"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
+			  <li><a href="<?php if($currentPage>1) echo "index.php?".$pagination_prefix."start=".($currentPage-1)*$_SESSION[$pagination_prefix."limit"]; ?>"><span class="glyphicon glyphicon-step-backward"></span></a></li>
 			  <?php echo $pagination; ?>
-			  <li><a href="<?php if($currentPage<($paginationPages-1)) echo "index.php?start=".($currentPage+1)*$_SESSION["limit"]; ?>#navigation_bar"><span class="glyphicon glyphicon-step-forward"></span></a></li>
-			  <li><a href="index.php?start=<?php echo ($paginationPages-1)*$_SESSION["limit"] ?>#navigation_bar"><span class="glyphicon glyphicon-fast-forward"></span></a></li>
+			  <li><a href="<?php if($currentPage<($paginationPages-1)) echo "index.php?".$pagination_prefix."start=".($currentPage+1)*$_SESSION[$pagination_prefix."limit"]; ?>#navigation_bar"><span class="glyphicon glyphicon-step-forward"></span></a></li>
+			  <li><a href="index.php?<?php echo $pagination_prefix;?>start=<?php echo ($paginationPages-1)*$_SESSION[$pagination_prefix."limit"] ?>#navigation_bar"><span class="glyphicon glyphicon-fast-forward"></span></a></li>
 			</ul>
 			<?php endif; ?>	
 	    </div>
@@ -509,14 +566,14 @@
 	 <!-- /.row -->
 	<!-- Content Row -->
 	<div class="row">
-        <div  id="pagination2"  class="col-lg-12 text-center">	
+    <div  id="pagination2"  class="col-lg-12 text-center">		
 			<?php if($pagination!="") : ?>
 			<ul class="pagination pagination-sm">
-			  <li><a href="index.php?start=0#navigation_bar"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
-			  <li><a href="<?php if($currentPage>1) echo "index.php?start=".($currentPage-1)*$_SESSION["limit"]; ?>"><span class="glyphicon glyphicon-step-backward"></span></a></li>
+			  <li><a href="index.php?<?php echo $pagination_prefix;?>start=0#navigation_bar"><span class="glyphicon glyphicon-fast-backward"></span></a></li>
+			  <li><a href="<?php if($currentPage>1) echo "index.php?".$pagination_prefix."start=".($currentPage-1)*$_SESSION[$pagination_prefix."limit"]; ?>"><span class="glyphicon glyphicon-step-backward"></span></a></li>
 			  <?php echo $pagination; ?>
-			  <li><a href="<?php if($currentPage<($paginationPages-1)) echo "index.php?start=".($currentPage+1)*$_SESSION["limit"]; ?>#navigation_bar"><span class="glyphicon glyphicon-step-forward"></span></a></li>
-			  <li><a href="index.php?start=<?php echo ($paginationPages-1)*$_SESSION["limit"] ?>#navigation_bar"><span class="glyphicon glyphicon-fast-forward"></span></a></li>
+			  <li><a href="<?php if($currentPage<($paginationPages-1)) echo "index.php?".$pagination_prefix."start=".($currentPage+1)*$_SESSION[$pagination_prefix."limit"]; ?>#navigation_bar"><span class="glyphicon glyphicon-step-forward"></span></a></li>
+			  <li><a href="index.php?<?php echo $pagination_prefix;?>start=<?php echo ($paginationPages-1)*$_SESSION[$pagination_prefix."limit"] ?>#navigation_bar"><span class="glyphicon glyphicon-fast-forward"></span></a></li>
 			</ul>
 			<?php endif; ?>	
 	    </div>
